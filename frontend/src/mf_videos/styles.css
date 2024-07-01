@@ -1,0 +1,57 @@
+.container {
+    display: flex;
+}
+
+#results {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#results .elemento-video {
+    width: 30%;
+    margin: 10px;
+}
+
+#results .elemento-video iframe{
+    width: 100%;
+    margin: 10px;
+}
+
+.busca-videos {
+    margin: 0px 15px;
+}
+
+.favorite-btn {
+    cursor: pointer;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.menu {
+    width: 200px;
+    height: 90vh;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+.menu a {
+    display: block;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.menu a:hover, .menu a.clicked {
+    color: #007bff;
+}
+
+#searchQuery {
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 8px;
+    width: 30%;
+}

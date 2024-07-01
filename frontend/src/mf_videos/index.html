@@ -4,12 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Busca de Vídeos do YouTube</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Busca de Vídeos do YouTube</h1>
-    <input type="text" id="searchQuery" placeholder="Digite sua busca">
-    <button onclick="searchVideos()">Buscar</button>
-    <div id="results"></div>
+    <div class="container">
+        <div class="menu">
+            <a href="#" id="link-videos" class="clicked">VÍDEOS</a>
+            <a href="#" id="link-favoritos">FAVORITOS</a>
+        </div>
+
+        <div class="busca-videos">
+            <h1>Busca de Vídeos do YouTube</h1>
+            <input type="text" id="searchQuery" placeholder="Pesquisar" onkeydown="searchVideos()">
+            <div id="results"></div>
+        </div>
+    </div>
 
     <script src="index.js"></script>
 </body>
