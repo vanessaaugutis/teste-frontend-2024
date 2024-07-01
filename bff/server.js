@@ -8,7 +8,6 @@ const fs = require('fs');
 const youtubeEndpoint = 'https://www.googleapis.com/youtube/v3/search';
 const favoritesFilePath = path.join(__dirname, 'favorites.json');
 
-// Verifica e cria o diretório se não existir
 const directory = path.dirname(favoritesFilePath);
 if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory, { recursive: true });
@@ -16,27 +15,22 @@ if (!fs.existsSync(directory)) {
 
 let favoriteVideos = [];
 
-// Função para carregar os favoritos do arquivo JSON
 function loadFavorites() {
     try {
-        // Verifica se o arquivo existe antes de ler
         if (fs.existsSync(favoritesFilePath)) {
             const data = fs.readFileSync(favoritesFilePath, 'utf8');
             favoriteVideos = JSON.parse(data);
         } else {
-            // Se o arquivo não existir, inicia com um array vazio
             favoriteVideos = [];
-            saveFavorites(); // Salva um arquivo vazio para garantir sua existência
+            saveFavorites();
         }
     } catch (error) {
         console.error('Erro ao ler arquivo de favoritos:', error);
     }
 }
 
-// Carregar os favoritos ao iniciar o servidor
 loadFavorites();
 
-// Salvar os favoritos no arquivo JSON
 function saveFavorites() {
     fs.writeFile(favoritesFilePath, JSON.stringify(favoriteVideos), (err) => {
         if (err) {
@@ -62,7 +56,7 @@ app.get('/api/youtube-search', async (req, res) => {
             part: 'snippet',
             q: req.query.q, 
             type: 'video', 
-            key: 'AIzaSyARKVO2ES5zbiNl9UEa5mR4gKaVTRxLxws'
+            key: 'AIzaSyDPPuSrOQA-cxe_iKeB0fOu-1D35bzXejg' // Colocar sua chave da API
         };
 
         const response = await axios.get(youtubeEndpoint, { params });
@@ -84,14 +78,13 @@ app.post('/api/favorites/:videoId', (req, res) => {
         favoriteVideos.splice(index, 1);
     }
 
-    // Salvar os favoritos de volta no arquivo JSON
     saveFavorites();
 
     res.json({ favorites: favoriteVideos });
 });
 
 app.get('/api/favorites', (req, res) => {
-    loadFavorites(); // Garante que os favoritos sejam carregados ao acessar esta rota
+    loadFavorites();
     res.json({ favorites: favoriteVideos });
 });
 

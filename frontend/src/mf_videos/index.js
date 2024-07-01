@@ -17,7 +17,14 @@ async function getFavorites() {
 async function loadFavorites() {
     try {
         const favorites = await getFavorites();
-        displayResults(favorites);
+        if (favorites.length === 0) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+            return;
+        }
+        const query = document.getElementById('searchQuery');
+        query.value = favorites.join('&q=');
+        searchVideos(true);
     } catch (error) {
         console.error('Erro ao carregar favoritos:', error);
         alert('Erro ao carregar favoritos. Verifique o console para mais detalhes.');
@@ -37,11 +44,9 @@ async function toggleFavorite(videoId) {
             throw new Error('Erro ao atualizar favoritos');
         }
 
-        // Atualiza a lista de favoritos após a alteração
         const updatedFavorites = await response.json();
         favorites = updatedFavorites.favorites;
 
-        // Atualiza a interface do usuário após a alteração
         updateUI();
 
     } catch (error) {
@@ -49,17 +54,16 @@ async function toggleFavorite(videoId) {
     }
 }
 
-async function searchVideos() {
-    const query = document.getElementById('searchQuery').value.trim();
+async function searchVideos(isFavorite) {
+    const query = document.getElementById('searchQuery');
 
     try {
-        const response = await fetch(`http://localhost:5000/api/youtube-search?q=${query}`);
-        if (!response.ok) {
-            throw new Error('Erro ao buscar vídeos do YouTube');
-        }
+        const response = await fetch(`http://localhost:5000/api/youtube-search?q=${query.value}`);
         const data = await response.json();
 
-        displayResults(data.items);
+        if (isFavorite) query.value = '';;
+ 
+        displayResults(data.items, isFavorite);
 
     } catch (error) {
         console.error('Erro ao buscar vídeos:', error);
@@ -67,11 +71,11 @@ async function searchVideos() {
     }
 }
 
-function displayResults(videos) {
+function displayResults(videos, isFavorite) {
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
 
-    videos.forEach(video => {
+    videos?.forEach(video => {
         const videoId = video.id.videoId;
         const title = video.snippet.title;
         const thumbnail = video.snippet.thumbnails.default.url;
@@ -81,7 +85,7 @@ function displayResults(videos) {
                 <h2>${title}</h2>
                 <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
                 <button class="favorite-btn" data-video-id="${videoId}" onclick="toggleFavorite('${videoId}')">
-                    ${favorites && favorites.includes(videoId) ? '<img width="20" height="20" src="https://th.bing.com/th/id/R.9b0f52ad060ca747a4643c99444b7392?rik=Gu8MwQUiUuJNIw&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fstar-png-star-vector-png-transparent-image-2000.png&ehk=tPTpccZ5Svh8XPduqc60tWiDArcQil6wZBZgi%2bsePdA%3d&risl=&pid=ImgRaw&r=0" alt="Marcar como Favorito">' : '<img width="20" height="20" src="https://th.bing.com/th/id/R.2fbb988f573f5b5a2f6ffec738b5cf05?rik=TENoIJPNwOQ4kg&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fstar-png-star-icon-1600.png&ehk=w%2buR8esLZsa%2f81YqoT4HTF09Zc3aGJSyWGWd204WWno%3d&risl=&pid=ImgRaw&r=0" alt="Desmarcar como Favorito">'}
+                    ${isFavorite || favorites.includes(videoId) ? '<img width="20" height="20" src="https://th.bing.com/th/id/R.9b0f52ad060ca747a4643c99444b7392?rik=Gu8MwQUiUuJNIw&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fstar-png-star-vector-png-transparent-image-2000.png&ehk=tPTpccZ5Svh8XPduqc60tWiDArcQil6wZBZgi%2bsePdA%3d&risl=&pid=ImgRaw&r=0" alt="Marcar como Favorito">' : '<img width="20" height="20" src="https://th.bing.com/th/id/R.2fbb988f573f5b5a2f6ffec738b5cf05?rik=TENoIJPNwOQ4kg&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fstar-png-star-icon-1600.png&ehk=w%2buR8esLZsa%2f81YqoT4HTF09Zc3aGJSyWGWd204WWno%3d&risl=&pid=ImgRaw&r=0" alt="Desmarcar como Favorito">'}
                 </button>
             </div>
         `;
@@ -97,7 +101,7 @@ async function updateUI() {
 
         const id = activeLink.id;
         if (id === 'link-videos') {
-            await searchVideos();
+            await searchVideos(false);
         } else if (id === 'link-favoritos') {
             await loadFavorites();
         }
@@ -116,7 +120,7 @@ async function initializeApp() {
             const id = activeLink.id;
         
             if (id === 'link-videos') {
-                await searchVideos();
+                await searchVideos(false);
             } else if (id === 'link-favoritos') {
                 await loadFavorites();
             }
