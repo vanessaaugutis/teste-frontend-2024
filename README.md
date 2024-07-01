@@ -2,6 +2,10 @@
 
 Teste FrontEnd 2024\
 
+# Requisitos
+
+- NodeJs versão 15.0.0
+
 Instalação das dependências
 
 - npm install
@@ -31,3 +35,7 @@ No Linux
 No Mac
 
 - open index.html
+
+Rodar testes unitários
+
+- npm test
