@@ -37,3 +37,23 @@ describe('getFavorites', () => {
         expect(favorites).toEqual(mockFavorites);
     });
 });
+
+describe('loadFavorites function', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('searchQuery').value = '';
+    });
+
+    test('deve chamar searchQuery com os favoritos e depois searchVideos', async () => {
+        const favorites = ['video1', 'video2', 'video3'];
+        require('../index').getFavorites.mockResolvedValueOnce(favorites);
+
+        await loadFavorites();
+
+        const searchQuery = document.getElementById('searchQuery');
+        expect(searchQuery.value).toBe('video1&q=video2&q=video3');
+
+        expect(require('../index').searchVideos).toHaveBeenCalledWith(true);
+    });
+});

@@ -29,8 +29,6 @@ function loadFavorites() {
     }
 }
 
-loadFavorites();
-
 function saveFavorites() {
     fs.writeFile(favoritesFilePath, JSON.stringify(favoriteVideos), (err) => {
         if (err) {

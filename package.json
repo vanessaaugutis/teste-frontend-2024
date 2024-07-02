@@ -12,6 +12,7 @@
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
+    "http-server": "^14.1.1",
     "jest": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
     "jsdom": "^24.1.0"
